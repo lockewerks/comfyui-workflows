@@ -1,0 +1,22 @@
+__pycache__/
+*.pyc
+
+# Generated media never belongs in here. Workflows produce it, the repo describes it.
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.mp4
+*.webm
+*.mov
+*.safetensors
+*.ckpt
+*.pt
+
+# Scratch
+scratch/
+*.tmp
+
+Thumbs.db
+desktop.ini
+.DS_Store

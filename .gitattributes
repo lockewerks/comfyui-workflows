@@ -1,0 +1,6 @@
+# ComfyUI reads these on Linux. Keep LF in the repo so diffs show real changes
+# instead of line-ending churn.
+* text=auto eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.py text eol=lf
