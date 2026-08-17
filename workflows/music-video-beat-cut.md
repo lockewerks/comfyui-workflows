@@ -32,9 +32,9 @@ been analysed, so the render nodes expand into one chain per shot at runtime.
 Measured on an RTX 4090 24 GB against a 195.04 s track at 1280x704, 25 fps, which
 planned to 58 shots and 4876 frames.
 
-- VRAM: **22.0 GB peak of 23.0 GB**, during the start-frame pass with SDXL
-  resident. That figure decides whether this fits your card. The video pass is
-  lighter.
+- VRAM: **23.1 GB peak of 24.1 GB**, during the start-frame pass with SDXL
+  resident. That figure decides whether this fits your card. The video pass peaks
+  lower, at 21.7 GB, so the start frames are the binding constraint.
 - Start frames: 5.3 s each at 28 steps, so 58 of them in about 5.1 minutes.
 - Shots: 11.2 minutes for 58 shots and 4876 frames, about 0.14 s per output
   frame including per-shot overhead.
