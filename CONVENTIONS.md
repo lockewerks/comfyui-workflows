@@ -41,14 +41,22 @@ Use these verbatim when the role exists, so scripts written against one graph wo
 against the next one:
 
 ```
+loaders                  conditioning             sampling / output
 Load checkpoint          Positive prompt          Sampler
 Load diffusion model     Negative prompt          Sampler: base pass
-Load VAE                                          Sampler: refine pass
-Load CLIP
-Load LoRA                Empty latent             Decode to image
-                         Encode image to latent   Save image
-                         Load image               Save video
+Load VAE                 Empty latent             Sampler: refine pass
+Load CLIP                Encode image to latent   Decode to image
+Load LoRA                Load image               Save image
                          Load audio
+```
+
+Video graphs add these. `Motion prompt` replaces `Positive prompt` in an
+image-to-video graph, because the two are not the same job: the start frame already
+supplies the subject, so the text exists to carry what must hold across the clip.
+
+```
+Load start frame         Motion prompt            Decode to video frames
+Load T5 text encoder     Start frame to latent    Save video
 ```
 
 Extend with a colon and a specific: `Load LoRA: hand fix`, `Save image: contact
@@ -92,6 +100,16 @@ this, it cannot fix it.
 - Frame interpolation does not belong in a per-shot graph. It fights the diffusion
   model for VRAM and eventually deadlocks in a node you cannot interrupt. Run it
   once over the assembled sequence, as its own workflow.
+- **A job that reports `success` can still have produced nothing.** Ask a video model
+  for a clip longer than it can hold together and it returns a valid file of the right
+  length, right frame count, right codec, containing pure video black. No error, no
+  warning. Check mean luma before you trust a run: a clip that reads 16.0 at every
+  sample is black, and one that is black from frame zero rather than fading to it was
+  never generated at all. Status strings are not verification.
+- Motion is a roughly fixed budget, not a rate. Doubling the frame count of a video
+  graph does not buy twice the camera movement, it spreads the same movement over twice
+  the duration, so a long clip reads slower and eventually nearly static. Length and
+  motion amplitude trade against each other and neither is set by the prompt.
 
 ## Layout
 

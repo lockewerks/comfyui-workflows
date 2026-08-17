@@ -43,15 +43,35 @@ await fetch('/prompt', {
 Renaming a titled node breaks anything that looks it up. Treat titles as part of
 the interface. `CONVENTIONS.md` defines the canonical role names.
 
+To save a graph back to ComfyUI, **percent-encode the slash in the path**:
+
+```js
+await fetch('/userdata/' + encodeURIComponent('workflows/NAME.json') + '?overwrite=true',
+  { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(app.graph.serialize()) });
+```
+
+`POST /userdata/workflows/NAME.json` returns 405 Method Not Allowed. Only the path
+segment is routable, so the subdirectory has to arrive as `workflows%2FNAME.json`. The
+same applies to reading it back with GET.
+
 ## Validating before commit
 
 ```
-python tools/check_workflow.py workflows/*.json
+python tools/sanitize_workflow.py workflows/*.json    # strip machine-specific UI state
+python tools/check_workflow.py    workflows/*.json    # then validate
 ```
 
-The checker fails on untitled nodes, cryptic abbreviations, duplicate titles, and
-absolute paths that only resolve on one machine. It warns on samplers left in
-randomize mode, which quietly ruins A/B comparisons.
+Sanitize first. Several nodes cache the last run's results in their serialized widget
+values, and VideoHelperSuite's `VHS_VideoCombine` is the worst: it stores a
+`videopreview` block with a `fullpath` to the output file, so committing a video graph
+straight out of ComfyUI publishes a home directory path and pins the graph to one
+machine. The node rebuilds that block on the next run, so dropping it costs nothing.
+
+The checker then fails on untitled nodes, titles that are just the class name, cryptic
+abbreviations, duplicate titles within a graph, missing notes files, and any absolute
+path that survived. It warns on samplers left in randomize mode, which quietly ruins
+A/B comparisons.
 
 ## Reference hardware
 
