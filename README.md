@@ -1,4 +1,17 @@
-# ComfyUI workflows
+<div align="center">
+
+<img src="assets/comfyui-workflows.ico" width="96" alt="ComfyUI Workflows">
+
+# ComfyUI Workflows
+
+**ComfyUI graphs that earned their place. Every node named for its job, every cost measured.**
+
+[![license](https://img.shields.io/badge/license-MIT-d6262a?style=flat-square)](LICENSE)
+![platform](https://img.shields.io/badge/platform-ComfyUI-d6262a?style=flat-square)
+
+</div>
+
+---
 
 Working ComfyUI graphs that earned their place. Every file here ran end to end on
 real hardware and produced output worth keeping. Experiments, dead ends, and
